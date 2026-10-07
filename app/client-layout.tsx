@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import { usePathname, useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 import { useSelector } from 'react-redux';
 
 import type { RootState } from '@/shared/api/store';
@@ -11,11 +12,16 @@ import { Footer } from '@/widgets/footer/ui';
 
 const Header = dynamic(() => import('@/widgets/header/ui/header'), { ssr: false });
 
-export function ClientLayout({ children }: { children: React.ReactNode }) {
-  const networkError = useSelector((state: RootState) => state.auth.networkError);
+function PageFooter() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const isPathArticlePage = pathname.startsWith('/article/') && !!searchParams.get('path');
+
+  return isPathArticlePage ? null : <Footer />;
+}
+
+export function ClientLayout({ children }: { children: React.ReactNode }) {
+  const networkError = useSelector((state: RootState) => state.auth.networkError);
 
   return (
     <ToastProvider>
@@ -43,7 +49,11 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
           children
         )}
       </main>
-      {!isPathArticlePage && <Footer />}
+      {/* useSearchParams needs a Suspense boundary for static prerendering;
+          the fallback keeps the footer in the prerendered HTML */}
+      <Suspense fallback={<Footer />}>
+        <PageFooter />
+      </Suspense>
     </ToastProvider>
   );
 }
