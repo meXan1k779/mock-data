@@ -1,0 +1,8 @@
+<svg preserveAspectRatio="xMidYMid meet" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 15 17.5" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Group">
+<path id="Vector" d="M7.5 0L15 2.7V7.8C15 12.4 11.9 15.5 7.5 17.5C3.1 15.5 0 12.4 0 7.8V2.7L7.5 0Z" fill="var(--fill-0, #41C742)"/>
+<path id="Vector_2" d="M7.5 0L15 2.7V7.8C15 12.4 11.9 15.5 7.5 17.5V0Z" fill="var(--fill-0, #2A972B)"/>
+<path id="Vector_3" d="M7.5 5V9.5" stroke="var(--stroke-0, white)" stroke-width="2" stroke-linecap="round"/>
+<path id="Vector_4" d="M7.5 13.9C8.16274 13.9 8.7 13.3627 8.7 12.7C8.7 12.0373 8.16274 11.5 7.5 11.5C6.83726 11.5 6.3 12.0373 6.3 12.7C6.3 13.3627 6.83726 13.9 7.5 13.9Z" fill="var(--fill-0, white)"/>
+</g>
+</svg>

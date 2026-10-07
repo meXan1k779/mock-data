@@ -1,0 +1,5 @@
+include:
+  - project: infra/ci-app-templates
+    ref: v4
+    file:
+      - .nodejs.gitlab-ci.yml

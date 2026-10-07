@@ -1,0 +1,271 @@
+@import "tailwindcss";
+
+@theme {
+  --font-manrope: "Manrope", 'sans-serif';
+  --font-noto: "Noto Sans", 'sans-serif';
+
+  --color-background-secondary: #F5F7FA;
+  --color-content-primary: #111928;
+  --color-content-tetriary: #9FA5B2;
+  --color-background-primary: #fff;
+  --color-extansion-negative: #C61717;
+  --color-base-link: #2581E5;
+  --color-base-positive: #14B215;
+  --color-base-negative: #EA3939;
+  --color-primary-bg: #FFCD05;
+  --color-primary-bg-disabled: #E3E7ED;
+  --color-content-secondary: #62697A;
+  --color-content-black-diabled: #828A99;
+  --color-tokens-yellow-50: #FFDD00;
+  --color-tokens-yellow-80: #F9B925;
+  --color-primary-hover: #FBC72D;
+  --color-secondary-default: #EDEFF2;
+  --color-secondary-hover: #E3E7ED;
+  --color-base-tech: #314158;
+  --color-border-tetriary: #E3E7ED;
+  --color-green: #EFFCEF;
+  --color-orange: #FFF3E0;
+  --color-blue: #E3F2FD;
+  --color-green-40: #14B215;
+  --color-red-40: #EA3939;
+  --color-green-5: #C8F6C8;
+  --color-red-5: #FCD1D1;
+  --color-border-warning: #FFDA9D;
+  --color-background-warning: #FFF3E0;
+  --color-blue-10: #A7D5F6;
+  --color-blue-100: #093375;
+  --color-orange-100: #3C1603;
+  --color-green-100: #0E3010;
+  --color-red-50: #E02222;
+
+  --breakpoint-xs: 320px;
+--breakpoint-sm: 640px;
+--breakpoint-md: 768px;
+--breakpoint-2md: 960px;
+--breakpoint-lg: 1024px;
+--breakpoint-xl: 1280px;
+--breakpoint-2xl: 1440px;
+}
+
+@layer components {
+
+  .custom-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(17, 25, 40, 0.48);
+    z-index: 1000;
+}
+
+  body {
+    font-family: var(--font-noto);
+    color: #111928;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  .prose ul {
+    list-style-type: disc
+  }
+
+   .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .scroll-fade-x {
+    background-image:
+      linear-gradient(to right, var(--color-background-secondary) 40%, transparent),
+      linear-gradient(to left, var(--color-background-secondary) 40%, transparent),
+      linear-gradient(to right, rgba(17, 25, 40, 0.08), transparent),
+      linear-gradient(to left, rgba(17, 25, 40, 0.08), transparent);
+    background-repeat: no-repeat;
+    background-size: 24px 100%, 24px 100%, 24px 100%, 24px 100%;
+    background-position: left, right, left, right;
+    background-attachment: local, local, scroll, scroll;
+  }
+    /* Изменение фона для автозаполнения инпутов */
+    input:-webkit-autofill {
+      -webkit-box-shadow: 0 0 0px 1000px white inset;
+      box-shadow: 0 0 0px 1000px white inset;
+    }
+
+  .btn {
+    @apply inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none;
+  }
+  
+  .btn:disabled {
+    @apply cursor-not-allowed transform-none shadow-none text-content-black-diabled bg-primary-bg-disabled hover:bg-primary-bg-disabled;
+  }
+  
+  .btn--sm {
+    @apply px-4 py-2 text-xs;
+  }
+  
+  .btn--md {
+    @apply px-6 py-2 text-[14px] leading-6;
+  }
+  
+  .btn--lg {
+    @apply px-8 py-3.5;
+  }
+  
+  .btn--primary {
+    @apply bg-primary-bg text-content-primary hover:bg-primary-hover
+  }
+  
+  .btn--secondary {
+    @apply bg-secondary-default text-content-primary hover:bg-secondary-hover
+  }
+  
+  .btn--text {
+    @apply bg-transparent text-content-primary hover:bg-background-secondary
+  }
+
+  .btn--text:disabled {
+    @apply bg-transparent hover:bg-transparent
+  }
+
+    .btn--outline {
+    @apply bg-transparent text-base-link border-base-link border 
+  }
+
+.tiptap p.is-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #adb5bd;
+  pointer-events: none;
+  height: 0;
+}
+
+.my-img img {
+  width: 100%;
+  height: auto;
+  display: block;
+  min-height: 200px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 8px;
+}
+
+.my-img img.loaded {
+  min-height: unset;
+  background: none;
+  animation: none;
+  border-radius: 0;
+}
+
+.tiptap h2 {
+  @apply text-[24px] md:text-[28px] lg:text-[32px] font-manrope font-bold mt-8 mb-4 text-content-primary;
+}
+
+.tiptap ul {
+  list-style-type: disc;
+  margin-left: 16px;
+}
+
+.tiptap h4 {
+  @apply text-[18px] md:text-[20px] lg:text-[24px] font-manrope font-bold mt-8 mb-4 text-content-primary;
+}
+
+ .menu-item {
+    display: flex;
+  }
+
+@media (max-width: 1150px) {
+  .menu-item:nth-last-child(3) {
+    display: none;
+  }
+}
+
+@media (max-width: 883px) {
+  .menu-item:nth-last-child(2) {
+    display: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .menu-item {
+    display: flex;
+  }
+}
+
+/* ========== СТИЛИ ДЛЯ ЗАГРУЗКИ ИЗОБРАЖЕНИЙ В TIPTAP EDITOR ========== */
+
+/* Скелетон лоадер для загружающихся изображений */
+.tiptap img[src=""], 
+.tiptap img:not([src]),
+.tiptap img[src^="data:image/svg+xml"] {
+  min-height: 200px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  display: block;
+  width: 100%;
+  opacity: 0.8;
+  content-visibility: hidden;
+  color: transparent !important;
+  font-size: 0 !important;
+  border-radius: 8px;
+}
+
+/* Убираем иконку битого изображения */
+.tiptap img[src=""]::before,
+.tiptap img:not([src])::before,
+.tiptap img[src^="data:image/svg+xml"]::before,
+.tiptap img[src=""]::after,
+.tiptap img:not([src])::after,
+.tiptap img[src^="data:image/svg+xml"]::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* Базовые стили для всех изображений в редакторе */
+.tiptap img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1rem 0;
+  font-size: 0;
+  line-height: 0;
+  color: transparent;
+}
+
+/* Анимация скелетона */
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Мигание курсора в hover-состоянии карточки "Поделись знаниями" */
+@keyframes cursor-blink {
+  0%,
+  49.9% {
+    opacity: 0;
+  }
+  50%,
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Стили для параграфов в редакторе */
+.tiptap p {
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+}

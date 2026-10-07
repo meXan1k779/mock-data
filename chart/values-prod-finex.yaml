@@ -1,0 +1,58 @@
+resources: 
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 250m
+    memory: 512Mi
+
+port: 3000
+
+ingress:
+  enabled: true
+  url: education.education.prod-k8s.xfx.mx
+  prefix: "/"
+
+startupProbe:
+  enabled: false
+livenessProbe: 
+  enabled: false
+readinessProbe: 
+  enabled: false
+
+env:
+  ENVIRONMENT: production
+  BASE_API_URL: https://edu-api.finex.co.id/
+
+# startupProbe:
+#   enabled: false
+#   # httpGet:
+#   #   path: /api/health/startup
+#   #   port: 3000
+#   # initialDelaySeconds: 0
+#   # periodSeconds: 10
+#   # timeoutSeconds: 5
+#   # failureThreshold: 18
+#   # successThreshold: 1
+
+# livenessProbe: 
+#   enabled: true
+#   httpGet:
+#     path: /api/health/liveness
+#     port: 3000
+#   initialDelaySeconds: 30
+#   periodSeconds: 30
+#   timeoutSeconds: 5
+#   failureThreshold: 3
+#   successThreshold: 1
+
+# readinessProbe: 
+#   enabled: true
+#   httpGet:
+#     path: /api/health/readiness
+#     port: 3000
+#   initialDelaySeconds: 10
+#   periodSeconds: 10
+#   timeoutSeconds: 5
+#   failureThreshold: 3
+#   successThreshold: 1

@@ -1,0 +1,25 @@
+resources: 
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 250m
+    memory: 512Mi
+
+port: 3000
+
+ingress:
+  enabled: true
+  url: education.education.stage-k8s.xfx.mx
+  prefix: "/"
+
+startupProbe:
+  enabled: false
+livenessProbe: 
+  enabled: false
+readinessProbe: 
+  enabled: false
+
+env:
+  ENVIRONMENT: staging
+  BASE_API_URL: https://education-api.education.stage-k8s.xfx.mx
