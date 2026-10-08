@@ -1,13 +1,9 @@
 'use client';
 
 import clsx from 'clsx';
-import { useEffect } from 'react';
 import type { ReactNode } from 'react';
-import { useSelector } from 'react-redux';
 
 import { useLazyGetApprovalDocQuery } from '@/features/main/api/main-api';
-import type { RootState } from '@/shared/api/store';
-import { useAnalytics } from '@/shared/hooks/useAnalytics';
 
 interface DetailRowProps {
   label: string;
@@ -65,14 +61,7 @@ const approvalDetails: DetailRowProps[] = [
 ];
 
 export const AboutUsPage = () => {
-  const user = useSelector((state: RootState) => state.auth.user);
-
-  const { trackPageview } = useAnalytics();
   const [getApprovalDoc, { isFetching: isApprovalDocLoading }] = useLazyGetApprovalDocQuery();
-
-  useEffect(() => {
-    trackPageview('/aboutus', user);
-  }, []);
 
   const handleViewApprovalDoc = async () => {
     try {

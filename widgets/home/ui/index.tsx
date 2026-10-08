@@ -1,8 +1,6 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
 
 import type { ContentResponse } from '@/features/article/new-article/api/types';
 import { LoginModal } from '@/features/auth/ui/login-modal';
@@ -10,8 +8,6 @@ import { learningPaths } from '@/features/learning-paths/model/constants';
 import { PathCard } from '@/features/learning-paths/ui/path-card';
 import { EmptyBlock } from '@/features/main/empty-block';
 import { TradingVideosSection } from '@/features/trading-videos/ui/trading-videos-section';
-import type { RootState } from '@/shared/api/store';
-import { useAnalytics } from '@/shared/hooks/useAnalytics';
 import { Button } from '@/shared/ui/button';
 import { Card } from '@/shared/ui/card/card';
 
@@ -24,12 +20,6 @@ interface HomeProps {
 
 export function Home({ latestArticles }: HomeProps) {
   const router = useRouter();
-  const user = useSelector((state: RootState) => state.auth.user);
-  const { trackPageview } = useAnalytics();
-
-  useEffect(() => {
-    trackPageview('/', user);
-  }, []);
 
   return (
     <div>

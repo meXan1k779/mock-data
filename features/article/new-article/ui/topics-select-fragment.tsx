@@ -1,9 +1,7 @@
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 
-import { useAppDispatch, type RootState } from '@/shared/api/store';
-import { useAnalytics } from '@/shared/hooks/useAnalytics';
+import { useAppDispatch } from '@/shared/api/store';
 import { ColumnsIcon } from '@/shared/icons/columnsIcon';
 import { CupIcon } from '@/shared/icons/cupIcon';
 import { KnowledgeIcon } from '@/shared/icons/knowledgeIcon';
@@ -44,14 +42,6 @@ export const TopicsSelectFragment = () => {
 
   const router = useRouter();
   const [updateContent, { isLoading }] = useUpdateContentMutation();
-
-  const user = useSelector((state: RootState) => state.auth.user);
-
-  const { trackPageview } = useAnalytics();
-
-  useEffect(() => {
-    trackPageview(`new-article/topics/${articleId}`, user);
-  }, []);
 
   useEffect(() => {
     if (data?.topics?.length) {

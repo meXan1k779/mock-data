@@ -1,20 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
-
-import type { RootState } from '@/shared/api/store';
-import { useAnalytics } from '@/shared/hooks/useAnalytics';
-
 export const PrivacyPolicyPage = () => {
-  const user = useSelector((state: RootState) => state.auth.user);
-
-  const { trackPageview } = useAnalytics();
-
-  useEffect(() => {
-    trackPageview('/privacy-policy', user);
-  }, []);
-
   return (
     <div className="max-w-[700px] mx-4 sm:mx-8 md:mx-auto mt-6 md:mt-10">
       <div className="text-[28px] sm:text-[32px] md:text-[40px] font-bold font-manrope mb-5 leading-12">

@@ -1,15 +1,12 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useState } from 'react';
 
 import { useGetMyBookmarksQuery } from '@/features/bookmarks/api/bookmarks-api';
 import { DISCOVER_VIDEOS } from '@/features/trading-videos/model/constants';
 import { VideoCardLarge } from '@/features/trading-videos/ui/video-card-large';
-import type { RootState } from '@/shared/api/store';
 import { withAuth } from '@/shared/hocs/with-auth';
-import { useAnalytics } from '@/shared/hooks/useAnalytics';
 import { useVideoBookmarks } from '@/shared/hooks/useVideoBookmarks';
 import { FinexLoader } from '@/shared/icons/finexLoader';
 import { Card } from '@/shared/ui/card/card';
@@ -25,13 +22,6 @@ const BookmarksPage = () => {
 
   const { bookmarkedVideoIds } = useVideoBookmarks();
   const bookmarkedVideos = DISCOVER_VIDEOS.filter((video) => bookmarkedVideoIds.includes(video.id));
-
-  const user = useSelector((state: RootState) => state.auth.user);
-  const { trackPageview } = useAnalytics();
-
-  useEffect(() => {
-    trackPageview('/bookmarks', user);
-  }, []);
 
   return (
     <div className="max-w-[700px] m-auto px-4 md:px-0 pb-20 pt-4 md:pt-6 lg:pt-10 2xl:pt-7">

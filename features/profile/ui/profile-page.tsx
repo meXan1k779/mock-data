@@ -1,13 +1,10 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { useCallback, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useCallback, useState } from 'react';
 
 import { useGetAllMyContentQuery } from '@/features/article/new-article/api/article-api';
-import type { RootState } from '@/shared/api/store';
 import { withAuth } from '@/shared/hocs/with-auth';
-import { useAnalytics } from '@/shared/hooks/useAnalytics';
 
 import { CardsBlock } from './cards-block';
 import { PersonalInfo } from './profile-info';
@@ -23,16 +20,8 @@ const ProfilePage = () => {
     activeTab === 0 ? defaultStatuses : published,
   );
 
-  const user = useSelector((state: RootState) => state.auth.user);
-
   const handleTabChange = useCallback((number: number) => {
     setActiveTab(number);
-  }, []);
-
-  const { trackPageview } = useAnalytics();
-
-  useEffect(() => {
-    trackPageview('/profile', user);
   }, []);
 
   return (

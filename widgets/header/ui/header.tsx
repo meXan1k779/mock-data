@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { resetEditorData } from '@/features/article/new-article/models/article-slice';
@@ -12,7 +12,6 @@ import { mockNotifications } from '@/features/notifications/model/mock-data';
 import { NotificationsPanel } from '@/features/notifications/ui/notifications-panel';
 import { UserMenuPanel } from '@/features/user-menu/ui/user-menu-panel';
 import { useAppDispatch, type RootState } from '@/shared/api/store';
-import { useAnalytics } from '@/shared/hooks/useAnalytics';
 import { useClickOutside } from '@/shared/hooks/useClickOutside';
 import { useMedia } from '@/shared/hooks/useMedia';
 import { ChevronLeftIcon } from '@/shared/icons/chevronLeftIcon';
@@ -56,18 +55,6 @@ const Header = () => {
   // dropdown open/close would be a confusing back-button trap there.
   const isUserMenuOpenMobile = searchParams.get('modal') === 'profile-menu';
   const isUserMenuOpen = isMobile ? isUserMenuOpenMobile : isUserMenuOpenDesktop;
-
-  const { trackPageview } = useAnalytics();
-
-  // Useberry usability-test screen tracking — same "report a pageview for every
-  // distinct screen" convention as the rest of the app, now that the mobile
-  // panel is its own URL. Desktop's dropdown isn't a distinct URL, so it's
-  // intentionally excluded.
-  useEffect(() => {
-    if (isUserMenuOpenMobile) {
-      trackPageview(`${pathname}?modal=profile-menu`, user);
-    }
-  }, [isUserMenuOpenMobile]);
 
   const closeUserMenu = () => {
     if (isMobile) {

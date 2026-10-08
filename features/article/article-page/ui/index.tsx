@@ -18,7 +18,6 @@ import {
 } from '@/features/learning-paths/models/learning-paths-slice';
 import { PathCompletedModal } from '@/features/learning-paths/ui/path-completed-modal';
 import { useAppDispatch, type RootState } from '@/shared/api/store';
-import { useAnalytics } from '@/shared/hooks/useAnalytics';
 import { CommentIcon } from '@/shared/icons/commentIcon';
 import { ScrollIcon } from '@/shared/icons/scrollIcon';
 import { ArticleStatus } from '@/shared/types/types';
@@ -88,12 +87,6 @@ export const ArticlePage = () => {
   useEffect(() => {
     setCourseMenuOpen(false);
   }, [articleId]);
-
-  const { trackPageview } = useAnalytics();
-
-  useEffect(() => {
-    trackPageview(`/article/${articleId}`, user);
-  }, []);
 
   const {
     data: articleData,

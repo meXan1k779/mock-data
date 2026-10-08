@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 
 import type { RootState } from '@/shared/api/store';
 import { useAppDispatch } from '@/shared/api/store';
-import { useAnalytics } from '@/shared/hooks/useAnalytics';
 import { ChevronLeftIcon } from '@/shared/icons/chevronLeftIcon';
 import { FinexLoader } from '@/shared/icons/finexLoader';
 import { ArticleStatus } from '@/shared/types/types';
@@ -33,12 +32,6 @@ export const PreviewPage = () => {
   );
 
   const user = useSelector((state: RootState) => state.auth.user);
-
-  const { trackPageview } = useAnalytics();
-
-  useEffect(() => {
-    trackPageview(`new-article/preview/${articleId}`, user);
-  }, []);
 
   const router = useRouter();
   const onEdit = () => {

@@ -1,9 +1,7 @@
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useState } from 'react';
 
-import { useAppDispatch, type RootState } from '@/shared/api/store';
-import { useAnalytics } from '@/shared/hooks/useAnalytics';
+import { useAppDispatch } from '@/shared/api/store';
 import { ChevronLeftIcon } from '@/shared/icons/chevronLeftIcon';
 import { Button } from '@/shared/ui/button';
 import { CustomCheckbox } from '@/shared/ui/checkbox';
@@ -40,14 +38,6 @@ export const PaymentGuide = () => {
   const dispatch = useAppDispatch();
   const [createContent, { isLoading }] = useCreateContentMutation();
   const [acceptedTerms, setAcceptedTerms] = useState(false);
-
-  const user = useSelector((state: RootState) => state.auth.user);
-
-  const { trackPageview } = useAnalytics();
-
-  useEffect(() => {
-    trackPageview('new-article/guide', user);
-  }, []);
 
   const handleContinue = async () => {
     const articleData = {

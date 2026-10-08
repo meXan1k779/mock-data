@@ -17,7 +17,6 @@ import { RegulatorBanner } from '@/features/main/regulator-banner';
 import { SideInfo } from '@/features/main/side-info';
 import type { RootState } from '@/shared/api/store';
 import { useAppDispatch } from '@/shared/api/store';
-import { useAnalytics } from '@/shared/hooks/useAnalytics';
 import { FinexLoader } from '@/shared/icons/finexLoader';
 import { Card } from '@/shared/ui/card/card';
 import { CardSkeleton } from '@/shared/ui/card/skeleton';
@@ -35,7 +34,6 @@ export function HomeFeed({ initialCards }: HomeFeedProps) {
   const lastScrollTopRef = useRef(0);
   const animationLockRef = useRef(false);
   const [topics, setTopics] = useState(mockTopicksList);
-  const user = useSelector((state: RootState) => state.auth.user);
   const dispatch = useAppDispatch();
 
   const allCards = useSelector((state: RootState) => state.articleSave.allCards);
@@ -50,12 +48,6 @@ export function HomeFeed({ initialCards }: HomeFeedProps) {
     () => topics.filter((topic) => topic.isSelected).map((item) => item.title),
     [topics],
   );
-
-  const { trackPageview } = useAnalytics();
-
-  useEffect(() => {
-    trackPageview('/', user);
-  }, []);
 
   useEffect(() => {
     // Resets pagination alongside the Redux cards cache below when the topic

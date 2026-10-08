@@ -7,7 +7,6 @@ import { useSelector } from 'react-redux';
 import { useUpdateUserMutation } from '@/features/auth/api/auth-api';
 import type { RootState } from '@/shared/api/store';
 import { cityOptions } from '@/shared/constants/cities';
-import { useAnalytics } from '@/shared/hooks/useAnalytics';
 import { useUnsavedChanges } from '@/shared/hooks/useUnsavedChanges';
 import { Button } from '@/shared/ui/button';
 import { ControlledDateInput } from '@/shared/ui/date-input/controlled-date-input';
@@ -121,12 +120,6 @@ export const SettingsPage = () => {
         ? 'opacity-100 visible translate-y-0'
         : 'opacity-0 h-0 invisible -translate-y-1 pointer-events-none'
     }`;
-
-  const { trackPageview } = useAnalytics();
-
-  useEffect(() => {
-    trackPageview('/profile/settings', user);
-  }, []);
 
   if (!user?.id) {
     return null;

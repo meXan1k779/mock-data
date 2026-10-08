@@ -2,13 +2,11 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
 import type { RootState } from '@/shared/api/store';
 import { useAppDispatch } from '@/shared/api/store';
-import { useAnalytics } from '@/shared/hooks/useAnalytics';
 import { Button } from '@/shared/ui/button';
 import { Form } from '@/shared/ui/form';
 import { ControlledPasswordField } from '@/shared/ui/password-field/controlled-password-field';
@@ -35,12 +33,6 @@ export const LoginForm = () => {
       password: '',
     },
   });
-
-  const { trackPageview } = useAnalytics();
-
-  useEffect(() => {
-    trackPageview('/login');
-  }, []);
 
   const [login, { isLoading }] = useLoginMutation();
 

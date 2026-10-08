@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import { useAppDispatch } from '@/shared/api/store';
@@ -10,7 +10,6 @@ import {
   PASSWORD_ALLOWED_CHARS_MESSAGE,
   PASSWORD_ALLOWED_CHARS_PATTERN,
 } from '@/shared/constants/password';
-import { useAnalytics } from '@/shared/hooks/useAnalytics';
 import { usePasswordValidation } from '@/shared/hooks/usePasswordValidation';
 import { Button } from '@/shared/ui/button';
 import { ControlledCheckbox } from '@/shared/ui/checkbox/controlled-checkbox';
@@ -40,12 +39,6 @@ export const RegisterForm = () => {
     },
   });
 
-  const { trackPageview } = useAnalytics();
-
-  useEffect(() => {
-    trackPageview('/register');
-  }, []);
-
   const {
     formState: { errors },
   } = form;
@@ -65,8 +58,6 @@ export const RegisterForm = () => {
         password: data.password,
         email: data.email,
       }).unwrap();
-
-      trackPageview('/register', user, 'sign_up');
 
       dispatch(
         setCredentials({

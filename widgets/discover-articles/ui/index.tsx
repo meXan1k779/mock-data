@@ -14,7 +14,6 @@ import { VideoCardLarge } from '@/features/trading-videos/ui/video-card-large';
 import type { RootState } from '@/shared/api/store';
 import { useAppDispatch } from '@/shared/api/store';
 import { MOCK_COMMENTS_COUNT } from '@/shared/constants/mock-comments-count';
-import { useAnalytics } from '@/shared/hooks/useAnalytics';
 import { useClickOutside } from '@/shared/hooks/useClickOutside';
 import { ChevronLeftIcon } from '@/shared/icons/chevronLeftIcon';
 import { DropdownCheckIcon } from '@/shared/icons/dropdownCheckIcon';
@@ -59,18 +58,6 @@ export function DiscoverArticles() {
   const closeFiltersModal = () => router.push(filtersBasePath);
   const sortRef = useRef<HTMLDivElement>(null);
   useClickOutside(sortRef, () => setSortOpen(false), sortOpen);
-
-  const user = useSelector((state: RootState) => state.auth.user);
-  const { trackPageview } = useAnalytics();
-
-  // Useberry usability-test screen tracking — the Filters modal is a distinct
-  // URL (see filtersModalOpen above), so it needs its own pageview the same
-  // way every other screen in the app reports one on mount.
-  useEffect(() => {
-    if (filtersModalOpen) {
-      trackPageview(`${filtersBasePath}/filters`, user);
-    }
-  }, [filtersModalOpen]);
 
   // Only the difficulty/sort row pins on scroll (the title above it scrolls away) — the
   // pinned row gets its own white background + top padding per Figma's "stuck" state,

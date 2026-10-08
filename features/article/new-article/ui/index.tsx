@@ -1,10 +1,6 @@
 import dynamic from 'next/dynamic';
 import { useParams, useRouter } from 'next/navigation';
-import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
 
-import type { RootState } from '@/shared/api/store';
-import { useAnalytics } from '@/shared/hooks/useAnalytics';
 import { ChevronLeftIcon } from '@/shared/icons/chevronLeftIcon';
 
 import { ARTICLE_EDITOR_LABELS } from './constants';
@@ -17,14 +13,6 @@ export const NewArticle = () => {
   const router = useRouter();
   const params = useParams();
   const articleId = params?.article as string;
-
-  const user = useSelector((state: RootState) => state.auth.user);
-
-  const { trackPageview } = useAnalytics();
-
-  useEffect(() => {
-    trackPageview(`new-article/${articleId}`, user);
-  }, []);
 
   const handlePreviewClick = () => {
     router.replace(`/new-article/preview/${articleId}`);

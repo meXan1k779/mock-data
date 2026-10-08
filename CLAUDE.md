@@ -110,7 +110,6 @@ Fonts: `font-noto` (body, default) · `font-manrope` (headings/display)
 
 | Hook | Purpose |
 |---|---|
-| `useAnalytics` | GTM event + pageview tracking |
 | `useAutoSave` | Debounced auto-save for the article editor |
 | `useContentSaver` | Handles draft/publish save logic |
 | `useUnsavedChanges` | Warns before leaving with unsaved editor state |
