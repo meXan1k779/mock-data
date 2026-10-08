@@ -5,27 +5,27 @@ export const mockTopicksList: {
   iconClassName?: string;
 }[] = [
   {
-    title: 'Pendaftaran dan masuk',
+    title: 'Pendaftaran dan Masuk',
     isSelected: false,
     icon: '/category-icons/registration-login.svg',
   },
-  { title: 'Verifikasi akun', isSelected: false, icon: '/category-icons/account-verification.svg' },
+  { title: 'Verifikasi Akun', isSelected: false, icon: '/category-icons/account-verification.svg' },
   {
-    title: 'Deposit dan penarikan',
+    title: 'Deposit dan Penarikan',
     isSelected: false,
     icon: '/category-icons/deposits-withdrawals.svg',
   },
   {
-    title: 'Platform trading Finex',
+    title: 'Platform Trading Finex',
     isSelected: false,
     icon: '/category-icons/trading-platform.svg',
   },
-  { title: 'Dasar-dasar trading', isSelected: false, icon: '/category-icons/trading-basics.svg' },
+  { title: 'Dasar-Dasar Trading', isSelected: false, icon: '/category-icons/trading-basics.svg' },
   { title: 'Analisis Trading', isSelected: false, icon: '/category-icons/technical-analysis.svg' },
-  { title: 'Alat trading', isSelected: false, icon: '/category-icons/trading-tools.svg' },
-  { title: 'Manajemen risiko', isSelected: false, icon: '/category-icons/risk-management.svg' },
+  { title: 'Alat Trading', isSelected: false, icon: '/category-icons/trading-tools.svg' },
+  { title: 'Manajemen Risiko', isSelected: false, icon: '/category-icons/risk-management.svg' },
   {
-    title: 'Emosi & Psikologi Trading',
+    title: 'Emosi dan Psikologi Trading',
     isSelected: false,
     icon: '/category-icons/shkala-kontrolya.svg',
     iconClassName: 'w-6 h-6',

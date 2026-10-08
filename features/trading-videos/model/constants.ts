@@ -75,7 +75,7 @@ const additionalDiscoverVideos: TradingVideoDefinition[] = [
     thumbnailUrl: '/trading-videos/thumbnail-macd.png',
     duration: '4:10',
     complexity: 1,
-    topic: 'Deposit dan penarikan',
+    topic: 'Deposit dan Penarikan',
   },
   {
     id: 'deposit-withdrawal-fees',
@@ -84,7 +84,7 @@ const additionalDiscoverVideos: TradingVideoDefinition[] = [
     thumbnailUrl: '/trading-videos/thumbnail-fibonacci.png',
     duration: '3:48',
     complexity: 1,
-    topic: 'Deposit dan penarikan',
+    topic: 'Deposit dan Penarikan',
   },
   {
     id: 'withdrawal-troubleshooting',
@@ -93,7 +93,7 @@ const additionalDiscoverVideos: TradingVideoDefinition[] = [
     thumbnailUrl: '/trading-videos/thumbnail-candlestick.png',
     duration: '6:02',
     complexity: 2,
-    topic: 'Deposit dan penarikan',
+    topic: 'Deposit dan Penarikan',
   },
   {
     id: 'risk-management-basics',
@@ -102,7 +102,7 @@ const additionalDiscoverVideos: TradingVideoDefinition[] = [
     thumbnailUrl: '/trading-videos/cover-support-resistance.png',
     duration: '7:15',
     complexity: 2,
-    topic: 'Manajemen risiko',
+    topic: 'Manajemen Risiko',
   },
   {
     id: 'trading-psychology-fomo',
@@ -111,7 +111,7 @@ const additionalDiscoverVideos: TradingVideoDefinition[] = [
     thumbnailUrl: '/trading-videos/thumbnail-macd.png',
     duration: '5:33',
     complexity: 2,
-    topic: 'Emosi & Psikologi Trading',
+    topic: 'Emosi dan Psikologi Trading',
   },
   {
     id: 'finex-platform-tour',
@@ -120,7 +120,7 @@ const additionalDiscoverVideos: TradingVideoDefinition[] = [
     thumbnailUrl: '/trading-videos/thumbnail-fibonacci.png',
     duration: '8:30',
     complexity: 1,
-    topic: 'Platform trading Finex',
+    topic: 'Platform Trading Finex',
   },
   {
     id: 'account-verification-guide',
@@ -129,7 +129,7 @@ const additionalDiscoverVideos: TradingVideoDefinition[] = [
     thumbnailUrl: '/trading-videos/thumbnail-candlestick.png',
     duration: '3:20',
     complexity: 1,
-    topic: 'Verifikasi akun',
+    topic: 'Verifikasi Akun',
   },
   {
     id: 'advanced-chart-tools',
@@ -139,7 +139,7 @@ const additionalDiscoverVideos: TradingVideoDefinition[] = [
     thumbnailUrl: '/trading-videos/cover-support-resistance.png',
     duration: '9:02',
     complexity: 3,
-    topic: 'Alat trading',
+    topic: 'Alat Trading',
   },
   {
     id: 'expert-portfolio-hedging',
