@@ -15,6 +15,7 @@ declare global {
       BASE_API_URL?: string;
       [key: string]: string | undefined;
     };
+    resetMockBackend?: () => Promise<void>;
   }
 }
 

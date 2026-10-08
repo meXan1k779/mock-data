@@ -1,4 +1,9 @@
+import { mockResponse } from '@/mocks/backend';
+import { fileToDataUrl, saveProfile } from '@/mocks/backend/user';
 import { baseApi } from '@/shared/api/base-api';
+import type { RootState } from '@/shared/api/store';
+
+import { MOCK_USER, setUser } from '../models/auth-slice';
 
 import type {
   AuthResponse,
@@ -10,100 +15,79 @@ import type {
   RegisterResponse,
 } from './types';
 
+// Prototype build: there is no backend and the app is always signed in as the
+// mock user (see features/auth/models/auth-slice.ts). Auth flows (login,
+// register, password reset, …) always succeed; profile edits are persisted
+// in the mock backend (mocks/backend/user.ts) and pushed into the auth slice.
+const MOCK_TOKENS = {
+  accessToken: 'useberry-test-access-token',
+  refreshToken: 'useberry-test-refresh-token',
+};
+
+const currentUser = (getState: () => unknown) => (getState() as RootState).auth.user ?? MOCK_USER;
+
 export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     register: builder.mutation<RegisterResponse, RegisterRequest>({
-      query: (credentials) => ({
-        url: '/api/auth/registrate',
-        method: 'POST',
-        body: credentials,
-      }),
+      queryFn: ({ email }, { getState }) =>
+        mockResponse(() => ({ ...currentUser(getState), email, tokens: MOCK_TOKENS })),
     }),
 
     login: builder.mutation<AuthResponse, LoginRequest>({
-      query: (credentials) => ({
-        url: '/api/auth/login',
-        method: 'POST',
-        body: credentials,
-      }),
+      queryFn: (_credentials, { getState }) =>
+        mockResponse(() => ({ user: currentUser(getState), ...MOCK_TOKENS })),
       invalidatesTags: ['Auth'],
     }),
 
     resendEmail: builder.mutation<AuthResponse, string>({
-      query: (email) => ({
-        url: `/api/user/resendMail/verification?email=${email}`,
-        method: 'POST',
-      }),
+      queryFn: (_email, { getState }) =>
+        mockResponse(() => ({ user: currentUser(getState), ...MOCK_TOKENS })),
     }),
 
     getUser: builder.query<AuthResponse['user'], void>({
-      query: () => '/api/user/profile',
+      queryFn: (_arg, { getState }) => mockResponse(() => currentUser(getState)),
       providesTags: ['User'],
     }),
 
     updateUser: builder.mutation<AuthResponse['user'], UserUpdate>({
-      query: ({ accessToken, ...body }) => ({
-        url: '/api/user/profile',
-        method: 'PUT',
-        body,
-        headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined,
-      }),
-      invalidatesTags: ['User'],
+      queryFn: ({ accessToken: _accessToken, experience: _experience, ...fields }, api) =>
+        mockResponse(async () => {
+          const user = await saveProfile({ ...currentUser(api.getState), ...fields });
+          api.dispatch(setUser(user));
+          return user;
+        }),
+      invalidatesTags: ['User', 'AllMyContent'],
     }),
 
     deleteProfile: builder.mutation<string, void>({
-      query: () => ({
-        url: '/api/user/profile',
-        method: 'DELETE',
-      }),
+      queryFn: () => mockResponse(() => 'ok'),
     }),
 
     uploadAvatar: builder.mutation<void, { avatar: File | string }>({
-      query: ({ avatar }) => {
-        const formData = new FormData();
-        formData.append('avatar', avatar);
-        return {
-          url: '/api/user/avatar',
-          method: 'PATCH',
-          body: formData,
-        };
-      },
-      invalidatesTags: ['User'],
+      queryFn: ({ avatar }, api) =>
+        mockResponse(async () => {
+          const avatarUrl = typeof avatar === 'string' ? avatar : await fileToDataUrl(avatar);
+          const user = await saveProfile({ ...currentUser(api.getState), avatarUrl });
+          api.dispatch(setUser(user));
+        }),
+      invalidatesTags: ['User', 'AllMyContent'],
     }),
 
     restoreEmail: builder.mutation<AuthResponse['user'], { email: string }>({
-      query: (email) => ({
-        url: '/api/user/forgotPassword/sendEmail',
-        method: 'POST',
-        body: email,
-      }),
+      queryFn: (_body, { getState }) => mockResponse(() => currentUser(getState)),
     }),
 
     verify: builder.mutation<AuthResponse, { email: string; verifyCode: string }>({
-      query: ({ email, verifyCode }) => ({
-        url: '/api/user/verify',
-        method: 'POST',
-        body: {
-          code: verifyCode,
-          email,
-        },
-      }),
+      queryFn: (_body, { getState }) =>
+        mockResponse(() => ({ user: currentUser(getState), ...MOCK_TOKENS })),
     }),
 
     setNewPassword: builder.mutation<void, NewPasswordRequest>({
-      query: (body) => ({
-        url: '/api/user/forgotPassword/changePassword',
-        method: 'POST',
-        body,
-      }),
+      queryFn: () => mockResponse(() => undefined),
     }),
 
     changePassword: builder.mutation<void, ChangePasswordRequest>({
-      query: (body) => ({
-        url: '/api/user/newPassword',
-        method: 'PATCH',
-        body,
-      }),
+      queryFn: () => mockResponse(() => undefined),
     }),
   }),
 });

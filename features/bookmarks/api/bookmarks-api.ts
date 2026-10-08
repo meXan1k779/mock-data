@@ -1,11 +1,12 @@
 import type { ContentResponse } from '@/features/article/new-article/api/types';
+import { mockResponse } from '@/mocks/backend';
+import { listPublished } from '@/mocks/backend/content';
+import { getStoredVote } from '@/mocks/backend/votes';
 import { baseApi } from '@/shared/api/base-api';
 
-// Useberry usability-test build: bookmarking needs a real authenticated
-// session, which this build doesn't have (see
-// features/auth/models/auth-slice.ts), so bookmarks are kept in localStorage
-// instead of hitting the real backend — they persist for the rest of the
-// session (and across a refresh) instead of silently failing.
+// Prototype build: there is no backend, so bookmarks are kept in
+// localStorage — they persist for the rest of the session (and across a
+// refresh).
 const STORAGE_KEY = 'useberry-bookmarks';
 
 // `null` means "never touched" (fresh tester) vs. `[]` meaning "explicitly
@@ -38,20 +39,27 @@ const writeBookmarks = (items: ContentResponse[]) => {
 export const bookmarksApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getMyBookmarks: builder.query<ContentResponse[], void>({
-      queryFn: async (_arg, _api, _extraOptions, baseQuery) => {
-        const stored = readStoredBookmarks();
-        if (stored !== null) {
-          return { data: stored };
-        }
+      queryFn: () =>
+        mockResponse(async () => {
+          const stored = readStoredBookmarks();
+          if (stored !== null) {
+            // Snapshots are taken at bookmark time — show the current local vote.
+            return stored.map((item) => {
+              const vote = getStoredVote(item.id);
+              if (!vote) {
+                return item;
+              }
+              const alreadyVote = vote.status === 'unvote' ? undefined : vote.status;
+              return { ...item, vote: String(vote.count), alreadyVote };
+            });
+          }
 
-        // Fresh Useberry tester, nothing bookmarked yet — seed a couple of
-        // real articles so the bookmarks page isn't empty on first visit.
-        const result = await baseQuery('api/content?page=0');
-        const articles = Array.isArray(result.data) ? (result.data as ContentResponse[]) : [];
-        const seed = articles.slice(0, 2);
-        writeBookmarks(seed);
-        return { data: seed };
-      },
+          // Fresh tester, nothing bookmarked yet — seed a couple of articles
+          // so the bookmarks page isn't empty on first visit.
+          const seed = (await listPublished(0, '')).slice(0, 2);
+          writeBookmarks(seed);
+          return seed;
+        }),
       providesTags: ['Bookmarks'],
     }),
 

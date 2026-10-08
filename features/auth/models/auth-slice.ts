@@ -1,7 +1,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import type { RootState } from '@/shared/api/store';
+import { getStoredProfile } from '@/mocks/backend/user';
 
 import type { AuthResponse } from '../api/types';
 
@@ -29,7 +29,7 @@ const getStoredRefreshToken = () => {
 // with. The app is hard-wired to always present as authenticated instead of
 // gating on a real backend session — see also `logout` and `initializeAuth`
 // below, and `shared/hocs/with-auth.tsx`.
-const MOCK_USER: AuthResponse['user'] = {
+export const MOCK_USER: AuthResponse['user'] = {
   id: 'useberry-test-user',
   nickname: 'Dimas Pratama',
   email: 'dimas.pratama@example.com',
@@ -46,10 +46,7 @@ const MOCK_USER: AuthResponse['user'] = {
   city: '',
   avatarUrl: '',
 };
-// Exported so base-api.ts can recognize it and skip sending it as a real
-// bearer token — the real backend rejects a request carrying ANY invalid
-// token with 401, even for otherwise-public reads (see base-api.ts).
-export const MOCK_ACCESS_TOKEN = 'useberry-test-access-token';
+const MOCK_ACCESS_TOKEN = 'useberry-test-access-token';
 
 const initialState: AuthState = {
   user: MOCK_USER,
@@ -154,70 +151,18 @@ export const {
   setNetworkError,
 } = authSlice.actions;
 
-// Флаг предотвращает двойной refresh, если initializeAuth диспатчится одновременно
-// из нескольких компонентов (Header + withAuth) на защищённых страницах.
-let initializePromise: Promise<void> | null = null;
-
-// На перезагрузке страницы accessToken нет в памяти — тихо обновляем через refreshToken.
-// accessToken намеренно не пишем в localStorage (защита от XSS).
-export const initializeAuth = createAsyncThunk(
-  'auth/initialize',
-  async (_, { dispatch, getState }) => {
-    const { accessToken } = (getState() as RootState).auth;
-    if (accessToken) {
-      return;
+// Prototype build: there is no backend session to restore — instead, load the
+// profile the user saved earlier (name, avatar, …) from the mock backend.
+// Dispatched once on boot from app/client-layout.tsx.
+export const initializeAuth = createAsyncThunk('auth/initialize', async (_, { dispatch }) => {
+  try {
+    const profile = await getStoredProfile();
+    if (profile) {
+      dispatch(setUser(profile));
     }
-
-    if (initializePromise) {
-      await initializePromise;
-      return;
-    }
-
-    initializePromise = (async () => {
-      const refreshToken =
-        typeof window !== 'undefined' ? localStorage.getItem('refreshToken') : null;
-
-      if (!refreshToken) {
-        dispatch(finishLoading());
-        return;
-      }
-
-      try {
-        const baseUrl = (
-          typeof window !== 'undefined'
-            ? window?.env?.BASE_API_URL || process.env.NEXT_PUBLIC_API_URL || ''
-            : process.env.BASE_API_URL || process.env.NEXT_PUBLIC_API_URL || ''
-        ).replace(/\/$/, '');
-
-        const response = await fetch(`${baseUrl}/api/auth/refresh`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token: refreshToken }),
-        });
-
-        if (!response.ok) {
-          if (response.status === 401) {
-            // Явный 401 — токен недействителен, удаляем.
-            localStorage.removeItem('refreshToken');
-          }
-          // 5xx / 404 / неправильный URL — временная проблема, не разлогиниваем,
-          // но и не блокируем всё приложение баннером: это тихий фоновый refresh,
-          // а не действие самого пользователя.
-          return;
-        }
-
-        const data: { accessToken: string; refreshToken: string } = await response.json();
-        dispatch(updateToken({ accessToken: data.accessToken, refreshToken: data.refreshToken }));
-      } catch {
-        // Сеть недоступна — токен сохраняем для следующей попытки, приложение не блокируем.
-      } finally {
-        dispatch(finishLoading());
-        initializePromise = null;
-      }
-    })();
-
-    await initializePromise;
-  },
-);
+  } finally {
+    dispatch(finishLoading());
+  }
+});
 
 export default authSlice.reducer;

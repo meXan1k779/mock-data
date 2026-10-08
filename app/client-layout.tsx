@@ -2,10 +2,12 @@
 
 import dynamic from 'next/dynamic';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { Suspense } from 'react';
+import { Suspense, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import type { RootState } from '@/shared/api/store';
+import { initializeAuth } from '@/features/auth/models/auth-slice';
+import { resetMockBackend } from '@/mocks/backend';
+import { useAppDispatch, type RootState } from '@/shared/api/store';
 import { NetworkErrorBanner } from '@/shared/ui/network-error-banner';
 import { ToastProvider } from '@/shared/ui/toast';
 import { Footer } from '@/widgets/footer/ui';
@@ -22,6 +24,14 @@ function PageFooter() {
 
 export function ClientLayout({ children }: { children: React.ReactNode }) {
   const networkError = useSelector((state: RootState) => state.auth.networkError);
+  const dispatch = useAppDispatch();
+
+  // Restores the profile saved in the mock backend (see initializeAuth).
+  // `resetMockBackend()` in the browser console wipes all local prototype data.
+  useEffect(() => {
+    dispatch(initializeAuth());
+    window.resetMockBackend = () => resetMockBackend().then(() => window.location.reload());
+  }, [dispatch]);
 
   return (
     <ToastProvider>

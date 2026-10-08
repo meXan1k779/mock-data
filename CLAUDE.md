@@ -46,16 +46,27 @@ Never import upward (e.g., `shared` must not import from `features`).
 - Store lives in `shared/api/store.ts`.
 
 ### Auth flow
-- JWT stored in `localStorage` (`accessToken`, `refreshToken`).
-- `baseQueryWithReauth` in `base-api.ts` auto-refreshes on `jwt expired` error, then retries the original request. On refresh failure it dispatches `logout()`.
-- `initializeAuth` action is called on app boot to rehydrate state from localStorage.
+- Prototype: the app is always signed in as `MOCK_USER` (`features/auth/models/auth-slice.ts`); auth mutations always succeed.
+- `initializeAuth` is dispatched on boot (`app/client-layout.tsx`) and loads the profile saved in the mock backend.
 
 ### RTK Query tag types
 `Auth | User | Profile | AllMyContent | Content | AllContent | ModeratorCards`
 
 ---
 
-## API
+## Mock backend (prototype)
+
+This prototype never talks to the real API. `baseApi` uses `fakeBaseQuery()` and every endpoint is a `queryFn` backed by `mocks/backend/`:
+
+- `fixtures/articles.json` — snapshot of the real published articles; images live in `public/mock-assets/` (signed storage URLs expire, so they were downloaded).
+- `db.ts` — articles + user profile in IndexedDB (`finex-mock-backend`), seeded from the fixtures. Bump `SEED_VERSION` to force a reseed.
+- `content.ts` / `comments.ts` / `votes.ts` / `user.ts` — handlers. Votes, bookmarks and comments live in localStorage (`useberry-*` keys).
+- `mockResponse()` wraps handlers with latency and fetchBaseQuery-shaped errors (404 → `notFound()` still works).
+- Run `resetMockBackend()` in the browser console to wipe local data and reseed.
+
+New endpoints must use `queryFn` + a mock handler — a plain `query` will fail.
+
+## API (real backend, unused in the prototype)
 
 Base URL resolved at runtime:
 - **Client:** `window.env.BASE_API_URL` (injected by `scripts/makeFrontEnv.js` into `public/__env.js`)

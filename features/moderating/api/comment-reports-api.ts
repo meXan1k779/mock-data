@@ -1,3 +1,5 @@
+import { mockResponse } from '@/mocks/backend';
+import { getReportedComments, resolveCommentReports } from '@/mocks/backend/comments';
 import { baseApi } from '@/shared/api/base-api';
 
 export interface ModeratedCommentAuthor {
@@ -48,39 +50,35 @@ export interface ResolveCommentReportResponse {
   resolvedReports: number;
 }
 
+// Prototype build: reports live in localStorage next to the comments
+// (see mocks/backend/comments.ts).
 export const commentReportsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getCommentReports: builder.query<ModeratedComment[], GetCommentReportsParams | void>({
-      query: (params) => {
-        const searchParams = new URLSearchParams();
-        searchParams.set('page', String(params?.page ?? 0));
-        searchParams.set('limit', String(params?.limit ?? 100));
-        if (params?.status) {
-          searchParams.set('status', params.status);
-        }
-        if (params?.tag) {
-          searchParams.set('tag', params.tag);
-        }
-        return `/api/moderator/comment/reports?${searchParams.toString()}`;
-      },
+      queryFn: (params) =>
+        mockResponse(() => {
+          const page = params?.page ?? 0;
+          const limit = params?.limit ?? 100;
+          return getReportedComments({ status: params?.status, tag: params?.tag }).slice(
+            page * limit,
+            (page + 1) * limit,
+          );
+        }),
       providesTags: ['CommentReports'],
     }),
 
-    // Один запрос на commentId: бэк сам резолвит все нерешённые репорты этого
-    // комментария и удаляет/восстанавливает всю ветку ответов.
+    // Один запрос на commentId: резолвятся все нерешённые репорты этого
+    // комментария, при скрытии удаляется вся ветка ответов.
     resolveCommentReport: builder.mutation<
       ResolveCommentReportResponse,
       ResolveCommentReportRequest
     >({
-      query: ({ commentId, resolve }) => ({
-        url: `/api/moderator/comment/${commentId}`,
-        method: 'PATCH',
-        body: { resolve },
-      }),
+      queryFn: ({ commentId, resolve }) =>
+        mockResponse(() => resolveCommentReports(commentId, resolve)),
       // Инвалидируем, чтобы счётчик в сайдбаре не протух. Список на экране
       // при этом не дёргается — reported-comments-list.tsx рендерит
       // застывший снапшот и игнорирует фоновые рефетчи того же запроса.
-      invalidatesTags: ['CommentReports'],
+      invalidatesTags: ['CommentReports', 'Comments'],
     }),
   }),
 });

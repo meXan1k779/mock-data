@@ -1,88 +1,75 @@
+import { getCurrentUser, mockResponse } from '@/mocks/backend';
+import * as mockContent from '@/mocks/backend/content';
 import { baseApi } from '@/shared/api/base-api';
 import type { ArticleStatus } from '@/shared/types/types';
 
 import type { ContentResponse, Attachment, ContentData } from './types';
 
+// Prototype build: served by the in-browser mock backend (mocks/backend).
 export const contentApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     createContent: builder.mutation<ContentResponse, ContentData>({
-      query: (data) => ({
-        url: 'api/content/',
-        method: 'POST',
-        body: data,
-      }),
+      queryFn: (data, { getState }) =>
+        mockResponse(() => mockContent.createContent(data, getCurrentUser(getState))),
+      invalidatesTags: ['AllMyContent'],
     }),
 
     getAllContent: builder.query<ContentResponse[], { page: number; topic: string }>({
-      query: ({ page, topic }) => `api/content?page=${page}${topic}`,
+      queryFn: ({ page, topic }) => mockResponse(() => mockContent.listPublished(page, topic)),
       keepUnusedDataFor: 0,
       providesTags: ['AllContent'],
     }),
 
     updateContent: builder.mutation<ContentResponse, ContentData>({
-      query: (data) => ({
-        url: `api/content/${data.id}`,
-        method: 'PUT',
-        body: data,
-      }),
+      queryFn: (data, { getState }) =>
+        mockResponse(() => mockContent.updateContent(data, getCurrentUser(getState))),
+      invalidatesTags: ['AllMyContent'],
     }),
 
     getContentById: builder.query<ContentResponse, string>({
-      query: (id) => `api/content/${id}`,
+      queryFn: (id) => mockResponse(() => mockContent.getPublishedById(id)),
       providesTags: ['Content'],
     }),
 
     deleteContentById: builder.mutation<ContentResponse, string>({
-      query: (id) => ({
-        url: `api/content/${id}`,
-        method: 'DELETE',
-      }),
+      queryFn: (id, { getState }) =>
+        mockResponse(() => mockContent.deleteContent(id, getCurrentUser(getState))),
       invalidatesTags: ['AllMyContent'],
     }),
 
     getMyContentById: builder.query<ContentResponse, string>({
-      query: (id) => `api/content/myContent/${id}`,
+      queryFn: (id, { getState }) =>
+        mockResponse(() => mockContent.getMyById(id, getCurrentUser(getState))),
     }),
 
     getAllMyContent: builder.query<ContentResponse[], string>({
-      query: (status) => `api/content/myContent?${status}`,
+      queryFn: (status, { getState }) =>
+        mockResponse(() => mockContent.listMine(status, getCurrentUser(getState))),
       providesTags: ['AllMyContent'],
     }),
 
     addAttachment: builder.mutation<Attachment, { articleId: string; file: File }>({
-      query: ({ articleId, file }) => {
-        const formData = new FormData();
-        formData.append('attachment', file);
-
-        return {
-          url: `api/content/attachment/${articleId}`,
-          method: 'POST',
-          body: formData,
-        };
-      },
+      queryFn: ({ articleId, file }) =>
+        mockResponse(() => mockContent.addAttachment(articleId, file)),
     }),
 
     deleteAttachment: builder.mutation<void, string>({
-      query: (attachmentId) => ({
-        url: `api/content/attachment/${attachmentId}`,
-        method: 'DELETE',
-      }),
+      queryFn: (attachmentId) => mockResponse(() => mockContent.deleteAttachment(attachmentId)),
     }),
 
     getModeratorContent: builder.query<ContentResponse[], ArticleStatus>({
-      query: (status) => `api/moderator/content?status=${status}&page=0&limit=30`,
+      queryFn: (status) => mockResponse(() => mockContent.listForModeration(status)),
       providesTags: ['ModeratorCards'],
     }),
 
     getModeratorContentById: builder.query<ContentResponse, string>({
-      query: (articleId) => `api/moderator/content/${articleId}`,
+      queryFn: (articleId) => mockResponse(() => mockContent.getForModeration(articleId)),
     }),
 
     submitContent: builder.mutation<void, string>({
-      query: (articleId) => ({
-        url: `api/content/${articleId}/submit`,
-        method: 'PATCH',
-      }),
+      queryFn: (articleId, { getState }) =>
+        mockResponse(() => mockContent.submitContent(articleId, getCurrentUser(getState))),
+      invalidatesTags: ['AllMyContent', 'ModeratorCards'],
     }),
   }),
 });

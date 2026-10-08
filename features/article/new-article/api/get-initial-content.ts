@@ -1,29 +1,14 @@
+import { filterPublished } from '@/mocks/backend/content';
+import type { MockArticle } from '@/mocks/backend/db';
+import seedArticles from '@/mocks/backend/fixtures/articles.json';
+
 import type { ContentResponse } from './types';
 
-function getServerBaseUrl(): string {
-  const raw = process.env.BASE_API_URL ?? '';
-  return raw.replace(/\/+$/, '');
-}
-
+// Prototype build: SSR renders the first feed page straight from the mock
+// backend's seed snapshot. The client then refetches through RTK Query, which
+// also picks up anything changed locally in the browser.
 export async function getInitialContent(): Promise<ContentResponse[]> {
-  const base = getServerBaseUrl();
-  if (!base) {
-    return [];
-  }
-
-  try {
-    const res = await fetch(`${base}/api/content?page=0`, {
-      cache: 'no-store',
-      signal: AbortSignal.timeout(3000),
-    });
-
-    if (!res.ok) {
-      return [];
-    }
-
-    const data = (await res.json()) as unknown;
-    return Array.isArray(data) ? (data as ContentResponse[]) : [];
-  } catch {
-    return [];
-  }
+  return filterPublished(seedArticles as unknown as MockArticle[], 0).map(
+    ({ AttachedFile: _attachments, ...article }) => article as ContentResponse,
+  );
 }

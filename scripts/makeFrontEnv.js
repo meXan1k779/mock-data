@@ -12,9 +12,10 @@ const env = {
   BASE_API_URL: process.env.BASE_API_URL,
 };
 
+// Прототип работает на моковом бэкенде (mocks/backend) — BASE_API_URL больше
+// не обязателен, поэтому без него только предупреждаем.
 if (!env.BASE_API_URL) {
-  console.error('\x1b[31m Ошибка: BASE_API_URL не установлен \x1b[0m');
-  process.exit(1);
+  console.warn('\x1b[33m BASE_API_URL не установлен — не используется в прототипе \x1b[0m');
 }
 
 const publicDir = path.join(process.cwd(), 'public');

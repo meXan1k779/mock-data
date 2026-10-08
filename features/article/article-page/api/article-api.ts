@@ -1,3 +1,5 @@
+import { mockResponse } from '@/mocks/backend';
+import { raiseStage, requestChanges } from '@/mocks/backend/content';
 import { baseApi } from '@/shared/api/base-api';
 
 import type { RequestChanges } from './types';
@@ -7,22 +9,24 @@ interface UpdateArticleStageRequest {
   articleId: string;
 }
 
+// Prototype build: served by the in-browser mock backend (mocks/backend).
 export const articleApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     pushArtcileStage: builder.mutation<string, UpdateArticleStageRequest>({
-      query: ({ articleId, approveId }) => ({
-        url: `/api/moderator/content/${articleId}/raise`,
-        method: 'PATCH',
-        body: { approveId },
-      }),
+      queryFn: ({ articleId, approveId }) =>
+        mockResponse(async () => {
+          await raiseStage(articleId, approveId);
+          return 'ok';
+        }),
       invalidatesTags: ['ModeratorCards'],
     }),
     requestChanges: builder.mutation<string, RequestChanges>({
-      query: ({ articleId, comment }) => ({
-        url: `/api/moderator/content/${articleId}/reject`,
-        method: 'PATCH',
-        body: { comment },
-      }),
+      queryFn: ({ articleId, comment }) =>
+        mockResponse(async () => {
+          await requestChanges(articleId, comment);
+          return 'ok';
+        }),
+      invalidatesTags: ['ModeratorCards'],
     }),
   }),
 });
