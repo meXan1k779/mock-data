@@ -29,7 +29,6 @@ const Header = () => {
   const notificationsRef = useRef<HTMLDivElement>(null);
   const unreadCount = notifications.filter((n) => n.isNew).length;
 
-  const [isUserMenuOpenDesktop, setUserMenuOpenDesktop] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
   useClickOutside(notificationsRef, () => setNotificationsOpen(false), isNotificationsOpen);
@@ -48,24 +47,24 @@ const Header = () => {
   const searchParams = useSearchParams();
   const { isXlDesktop, isMobile } = useMedia();
 
-  // On mobile the panel is a full-screen "modal" ("Panduan Finex" usability-test
-  // requirement) — give it its own URL (?modal=profile-menu) so it's a distinct,
-  // trackable screen and the hardware/browser back button closes it naturally.
-  // Desktop keeps the old local-state dropdown: a history entry per hover-ish
-  // dropdown open/close would be a confusing back-button trap there.
-  const isUserMenuOpenMobile = searchParams.get('modal') === 'profile-menu';
-  const isUserMenuOpen = isMobile ? isUserMenuOpenMobile : isUserMenuOpenDesktop;
+  // The profile menu has its own URL (?modal=profile-menu) on every screen size
+  // so Useberry sees it as a distinct screen and attributes clicks inside it to
+  // that URL rather than to the page underneath. The Useberry script itself is
+  // loaded globally in app/layout.tsx. The browser back button closes the menu.
+  const isUserMenuOpen = searchParams.get('modal') === 'profile-menu';
 
-  const closeUserMenu = () => {
-    if (isMobile) {
-      const params = new URLSearchParams(searchParams.toString());
+  const setUserMenuUrl = (open: boolean) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (open) {
+      params.set('modal', 'profile-menu');
+    } else {
       params.delete('modal');
-      const query = params.toString();
-      router.push(query ? `${pathname}?${query}` : pathname);
-      return;
     }
-    setUserMenuOpenDesktop(false);
+    const query = params.toString();
+    router.push(query ? `${pathname}?${query}` : pathname, { scroll: false });
   };
+
+  const closeUserMenu = () => setUserMenuUrl(false);
 
   useClickOutside(userMenuRef, closeUserMenu, isUserMenuOpen);
 
@@ -101,22 +100,13 @@ const Header = () => {
     router.replace(route);
   };
 
-  const handleAvatarClick = () => {
-    if (isUserMenuOpen) {
-      closeUserMenu();
-      return;
-    }
-    if (isMobile) {
-      const params = new URLSearchParams(searchParams.toString());
-      params.set('modal', 'profile-menu');
-      router.push(`${pathname}?${params.toString()}`);
-      return;
-    }
-    setUserMenuOpenDesktop(true);
-  };
+  const handleAvatarClick = () => setUserMenuUrl(!isUserMenuOpen);
+
+  // Menu links navigate to URLs without ?modal, which closes the menu by itself —
+  // pushing a separate "close" URL too would leave a stray history entry.
+  const handleUserMenuNavigate = () => {};
 
   const handleUserMenuLogout = () => {
-    closeUserMenu();
     dispatch(logout());
     router.push('/');
   };
@@ -223,7 +213,7 @@ const Header = () => {
                       nickname={user?.nickname}
                       email={user?.email}
                       avatarUrl={user?.avatarUrl}
-                      onNavigate={closeUserMenu}
+                      onNavigate={handleUserMenuNavigate}
                       onLogout={handleUserMenuLogout}
                       onClose={closeUserMenu}
                     />
