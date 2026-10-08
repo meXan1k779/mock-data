@@ -80,7 +80,7 @@ export const PathSidebar = ({ pathId, articleId, className, onClose }: PathSideb
               <div className="flex-1 min-w-0">
                 <p className="text-base text-content-primary truncate">{step.title}</p>
                 <p className="text-sm text-content-secondary">
-                  {getReadingTime(step.description)} min read
+                  Bacaan {getReadingTime(step.description)} menit
                 </p>
               </div>
               {isDone && <PositiveCheckmarkIcon className="size-6 shrink-0" />}

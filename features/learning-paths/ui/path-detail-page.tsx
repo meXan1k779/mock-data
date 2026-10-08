@@ -41,10 +41,10 @@ export function PathDetailPage({ pathId }: PathDetailPageProps) {
 
   const ctaLabel =
     progress.status === 'completed'
-      ? 'Review'
+      ? 'Tinjau ulang'
       : progress.status === 'in-progress'
-        ? 'Continue'
-        : 'Start now';
+        ? 'Lanjutkan'
+        : 'Mulai sekarang';
 
   const handleCta = () => {
     const target = progress.nextStepId ?? steps[0]?.id;
@@ -68,10 +68,10 @@ export function PathDetailPage({ pathId }: PathDetailPageProps) {
         <div className="w-full md:w-[389px] lg:w-[640px] shrink-0">
           <div className="flex flex-wrap items-center gap-2 mb-2 md:mb-4">
             <span className="h-8 flex items-center px-3 rounded-full bg-background-primary text-content-primary text-base">
-              {steps.length} articles
+              {steps.length} artikel
             </span>
             <span className="h-8 flex items-center px-3 rounded-full bg-background-primary text-content-primary text-base">
-              {progress.totalMinutes} min reading
+              Bacaan {progress.totalMinutes} menit
             </span>
           </div>
           <h1 className="font-manrope font-bold text-[28px] leading-9 md:text-[32px] md:leading-[40px] lg:font-noto lg:font-semibold lg:text-[40px] lg:leading-[48px] text-content-primary mb-2 md:mb-4">
@@ -96,8 +96,8 @@ export function PathDetailPage({ pathId }: PathDetailPageProps) {
               </div>
               <p className="text-content-primary text-sm">
                 {progress.status === 'completed'
-                  ? 'Completed'
-                  : `${progress.remainingMinutes} min left`}
+                  ? 'Selesai'
+                  : `${progress.remainingMinutes} menit tersisa`}
               </p>
             </div>
           )}
@@ -122,7 +122,7 @@ export function PathDetailPage({ pathId }: PathDetailPageProps) {
 
       <div className="mt-[72px] max-w-[700px] mx-auto">
         <h2 className="font-noto font-semibold text-lg text-content-primary mb-2">
-          What you&rsquo;ll learn
+          Hal yang akan Anda pelajari
         </h2>
         <ul className="list-disc pl-[27px] flex flex-col text-content-primary text-lg leading-7">
           {path.whatYouLearn.map((item) => (
@@ -133,7 +133,7 @@ export function PathDetailPage({ pathId }: PathDetailPageProps) {
 
       <div className="mt-[72px] max-w-[700px] mx-auto">
         <h2 className="font-noto font-semibold text-lg text-content-primary mb-2">
-          Who it&rsquo;s for
+          Cocok untuk Anda jika
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-5">
           {path.whoItsFor.positive.map((item) => (
@@ -145,7 +145,8 @@ export function PathDetailPage({ pathId }: PathDetailPageProps) {
           <div className="bg-background-primary border border-dashed border-[#cfd4dd] rounded-2xl p-5 flex flex-col gap-3">
             <img src="/learning-paths/error-outline.svg" alt="" className="size-6" />
             <p className="text-content-secondary text-base">
-              <span className="font-semibold">Not for you if:</span> {path.whoItsFor.negative}
+              <span className="font-semibold">Kursus ini kurang sesuai jika:</span>{' '}
+              {path.whoItsFor.negative}
             </p>
           </div>
         </div>
@@ -176,7 +177,7 @@ export function PathDetailPage({ pathId }: PathDetailPageProps) {
                 <div className="flex-1 min-w-0">
                   <p className="text-content-primary text-base truncate">{step.title}</p>
                   <p className="text-content-secondary text-sm">
-                    {getReadingTime(step.description)} min read
+                    Bacaan {getReadingTime(step.description)} menit
                   </p>
                 </div>
                 {isDone && <PositiveCheckmarkIcon className="size-6 shrink-0" />}
@@ -184,7 +185,7 @@ export function PathDetailPage({ pathId }: PathDetailPageProps) {
             );
           })}
           {!isLoading && steps.length === 0 && (
-            <p className="text-content-secondary">No articles available for this path yet.</p>
+            <p className="text-content-secondary">Belum ada artikel untuk jalur ini.</p>
           )}
         </div>
       </div>
