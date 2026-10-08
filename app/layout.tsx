@@ -35,6 +35,7 @@ const manrope = Manrope({
 export const metadata: Metadata = {
   title: 'Finex Kita',
   description: 'Finex Kita — platform edukasi',
+  robots: { index: false, follow: false },
 };
 
 export default function RootLayout({
