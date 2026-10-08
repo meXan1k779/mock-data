@@ -52,6 +52,12 @@ export default function RootLayout({
           <StoreProvider>
             <ClientLayout>{children}</ClientLayout>
           </StoreProvider>
+          {/* Dormant until loaded inside a Useberry test session — safe to
+              keep in place permanently, doesn't affect real visitors. */}
+          <Script
+            src="https://api.useberry.com/integrations/liveUrl/scripts/useberryScript.js"
+            strategy="afterInteractive"
+          />
         </body>
       </NetworkStatus>
     </html>
